@@ -21,18 +21,35 @@ void Game::Run()
 		mMap[mouse->GetCoords().x][mouse->GetCoords().y] = 0;
 
 		sf::Event event;
+
+		count += clockdown.restart();
+
+		while(count.asMilliseconds() >= 150)
+		{
+		   	count -= sf::milliseconds(150); 
+		   	mouse->Move();
+		}
+
+		if (mMap[mouse->GetCoords().x][mouse->GetCoords().y] == 2)
+		{
+		   	mMap[mouse->GetCoords().x][mouse->GetCoords().y] = 3;
+		   	mouse->AteCheese();
+		   	int foodH, foodW;
+		   	do
+		   	{
+		   		foodH = rand() % 15;
+		   		foodW = rand() % 20;
+		   	} while(mMap[foodH][foodW] != 0);
+
+		   	mMap[foodH][foodW] = 2;
+
+		 	mouse->LoadNewMap(mMap);
+		}
+
 		while(window.pollEvent(event)) 
 		{
 		    if(event.type == sf::Event::Closed)
 		    	window.close();
-
-		    count += clockdown.restart();
-
-		    while(count.asMilliseconds() >= 150)
-		    {
-		    	count -= sf::milliseconds(150); 
-		    	mouse->Move();
-		    }
 		    
 		    /*
 		    else if (event.type == sf::Event::KeyPressed)
@@ -40,21 +57,6 @@ void Game::Run()
 		    		mouse->Move();
 		    		*/
 
-		    if (mMap[mouse->GetCoords().x][mouse->GetCoords().y] == 2)
-		    {
-		    	mMap[mouse->GetCoords().x][mouse->GetCoords().y] = 3;
-		    	mouse->AteCheese();
-		    	int foodH, foodW;
-		    	do
-		    	{
-		    		foodH = rand() % 15;
-		    		foodW = rand() % 20;
-		    	} while(mMap[foodH][foodW] != 0);
-
-		    	mMap[foodH][foodW] = 2;
-
-		    	mouse->LoadNewMap(mMap);
-		    }
 		}
 
 		mMap[mouse->GetCoords().x][mouse->GetCoords().y] = 3;
